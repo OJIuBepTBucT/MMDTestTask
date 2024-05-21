@@ -1,122 +1,72 @@
-// import 'package:flutter/material.dart';
-// import '../model/crypto_asset.dart';
-// import 'dart:math';
-//
-// class CryptoItem extends StatelessWidget {
-//   final CryptoAsset asset;
-//   final int index;
-//
-//   CryptoItem({required this.asset, required this.index});
-//
-//   Color _generateColor(int index) {
-//     final Random random = Random(index);
-//     return Color.fromARGB(
-//       26,
-//       random.nextInt(256),
-//       random.nextInt(256),
-//       random.nextInt(256),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 84,
-//       padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-//       child: Row(
-//         children: [
-//           Container(
-//             width: 56,
-//             height: 56,
-//             decoration: BoxDecoration(
-//               color: _generateColor(index),
-//               borderRadius: BorderRadius.circular(18), // Rounded rectangle
-//             ),
-//           ),
-//           SizedBox(width: 16),
-//           Expanded(
-//             child: Text(
-//               asset.symbol,
-//               style: TextStyle(
-//                 fontFamily: 'SFProText',
-//                 fontWeight: FontWeight.w600,
-//                 fontSize: 17,
-//                 height: 24 / 17,
-//                 letterSpacing: -0.41,
-//                 color: Color(0xFF17171A),
-//               ),
-//             ),
-//           ),
-//           Text(
-//             '\$${asset.priceUsd.toStringAsFixed(2)}',
-//             style: TextStyle(
-//               fontFamily: 'SFProText',
-//               fontWeight: FontWeight.w600,
-//               fontSize: 17,
-//               height: 24 / 17,
-//               letterSpacing: -0.41,
-//               color: Color(0xFF17171A),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import '../model/crypto_model.dart';
 import 'package:intl/intl.dart';
-import '../model/crypto_asset.dart';
-import 'dart:math';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CryptoItem extends StatelessWidget {
-  final CryptoAsset asset;
+  final CryptoModel asset;
   final int index;
 
-  CryptoItem({required this.asset, required this.index});
+  const CryptoItem({super.key, required this.asset, required this.index});
 
   Color _generateColor(int index) {
-    final Random random = Random(index);
-    return Color.fromARGB(
-      26, // Adjust the alpha value to make it paler
-      random.nextInt(256),
-      random.nextInt(256),
-      random.nextInt(256),
-    );
+    int maxColors = 256 * 256 * 256; // 16,777,216 colors
+    if (index >= maxColors) {
+      throw ArgumentError('Index must be less than $maxColors');
+    }
+
+    // Simple hash function to mix up colors
+    int hash = _simpleHash(index);
+    int b = hash % 256;
+    int g = (hash ~/ 256) % 256;
+    int r = (hash ~/ (256 * 256)) % 256;
+    return Color.fromARGB(255, r, g, b).withOpacity(0.1);
+  }
+
+  int _simpleHash(int x) {
+    // Simple hash function to mix up the bits
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+    return x;
   }
 
   String _formatPrice(double price) {
     final numberFormat = NumberFormat.currency(
-        locale: 'en_US', symbol: '\$', decimalDigits: 2);
+      locale: 'en_US',
+      symbol: '\$',
+      decimalDigits: 2,
+    );
+
     return numberFormat.format(price);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 84,
-      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      height: 84.h,
+      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
       child: Row(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 56.w,
+            height: 56.h,
             decoration: BoxDecoration(
               color: _generateColor(index),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(18.r),
             ),
           ),
-          SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Expanded(
             child: Text(
               asset.symbol,
               style: TextStyle(
                 fontFamily: 'SFProText',
                 fontWeight: FontWeight.w600,
-                fontSize: 17,
-                height: 24 / 17,
-                letterSpacing: -0.41,
-                color: Color(0xFF17171A),
+                fontSize: 17.sp,
+                height: 24.h / 17.sp,
+                letterSpacing: -0.41.sp,
+                color: const Color(0xFF17171A),
               ),
             ),
           ),
@@ -125,10 +75,10 @@ class CryptoItem extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'SFProText',
               fontWeight: FontWeight.w600,
-              fontSize: 17,
-              height: 24 / 17,
-              letterSpacing: -0.41,
-              color: Color(0xFF17171A),
+              fontSize: 17.sp,
+              height: 24.h / 17.sp,
+              letterSpacing: -0.41.sp,
+              color: const Color(0xFF17171A),
             ),
           ),
         ],

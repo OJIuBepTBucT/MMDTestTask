@@ -1,16 +1,16 @@
-class CryptoAsset {
+class CryptoModel {
   final String id;
   final String symbol;
   final double priceUsd;
 
-  CryptoAsset({
+  CryptoModel({
     required this.id,
     required this.symbol,
     required this.priceUsd,
   });
 
-  factory CryptoAsset.fromJson(Map<String, dynamic> json) {
-    return CryptoAsset(
+  factory CryptoModel.fromJson(Map<String, dynamic> json) {
+    return CryptoModel(
       id: json['id'],
       symbol: json['symbol'],
       priceUsd: double.parse(json['priceUsd']),
